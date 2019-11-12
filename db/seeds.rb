@@ -10,11 +10,20 @@ Stock.find_or_create_by(company_name: "Tesla", symbol: "TSLA")
 
 # Test user
 
-user = User.find_or_create_by(
-  first_name: "Tester",
-  last_name: "Testing",
-  email: "test@test.com",
-  password: "topsecret"
+user1 = User.find_or_create_by(
+  first_name: "Qing",
+  last_name: "Wang",
+  email: "qing@gmail.com",
+  password: "mypassword"
 )
+
+user2 = User.find_or_create_by(
+  first_name: "Faris",
+  last_name: "Aziz",
+  email: "faris@gmail.com",
+  password: "12345678"
+)
+
+
 
 p 'seeds done'
