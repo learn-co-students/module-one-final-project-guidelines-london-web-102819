@@ -1,7 +1,19 @@
+require 'open-uri'   
+require 'json' 
+require 'pry'
+
 class CLI
     def initialize
         @prompt = TTY::Prompt.new
     end
+
+    # @api_key = "09KS2T8J28FSB9QP"
+    # @stock = ["AAPL", "MSFT", "AMZN", "SNAP", "GOOG", "YHOO", "TSLA", "NIKE"].sample
+  def time_series_daily(symbol)
+    content = open("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{symbol}&apikey=09KS2T8J28FSB9QP").read
+    JSON.parse(content)
+  end
+
 
     def greet
         input = @prompt.select("Welcome to MyStockExchange! Please select and option from the menu", ["Sign Up", "Login", "Delete Account", "Exit"])
@@ -91,7 +103,7 @@ class CLI
     def successful_register 
         @user = User.create_user(@first_name, @last_name, @email, @password) 
         puts "You have sucessfuly registered #{@user.first_name}!"
-        # main_menu
+        dasboard
     end
 
     def login_greet
@@ -113,7 +125,7 @@ class CLI
 
     def successful_login
         puts "You have sucessfuly logged in #{@user.first_name}!"
-        # main_menu
+        dasboard
     end
 
     def login_fail
@@ -154,4 +166,33 @@ class CLI
         end
     end
 
+    def view_stock_market
+        time_series = time_series_daily(symbol)["Time Series (Daily)"]
+        latest_data = time_series.first
+        close_price = latest_data[1]["4. close"].to_f.round(2)
+    end 
+
+
+    def dasboard
+        input = @prompt.select("Dashboard:", ["View Current Stocks", "View Stock Market", "Logout" "Exit"])
+
+        if input == "View Current Stocks"
+            # read function
+        elsif input == "View Stock Market"
+            # read fucntion
+        elsif input == "Logout"
+            greet
+        else 
+            return      
+        end
+
+    end
+
+
 end
+
+# def latest_price(symbol)
+#     time_series = time_series_daily(symbol)["Time Series (Daily)"]
+#     latest_data = time_series.first
+#     close_price = latest_data[1]["4. close"].to_f.round(2)
+#   end
