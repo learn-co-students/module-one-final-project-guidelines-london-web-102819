@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_155159) do
   create_table "positions", force: :cascade do |t|
     t.integer "portfolio_id"
     t.integer "stock_id"
+    t.integer "quantity"
   end
 
   create_table "stocks", force: :cascade do |t|
