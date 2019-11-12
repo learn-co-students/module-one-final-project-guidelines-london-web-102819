@@ -3,7 +3,7 @@ class Portfolio < ActiveRecord::Base
   belongs_to :user
 
   def total_value
-    
+    self.positions.map { |p| p.stock.price }.sum
   end
   
 end
