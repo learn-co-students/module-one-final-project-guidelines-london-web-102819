@@ -9,17 +9,17 @@ class StockApiService
     @api_key = api_key
   end
 
-  def time_series_daily(symbol = "MSFT")
+  def time_series_daily(symbol)
     content = open("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{symbol}&apikey=#{@api_key}").read
     JSON.parse(content)
     #JSON.parse() to convert text into a JavaScript object
   end
 
-  def latest_price(symbol = "MSFT")
+  def latest_price(symbol)
     if !@@price_cache.include?(symbol) 
       time_series = time_series_daily(symbol)["Time Series (Daily)"] #the whole hash
       recent_day, recent_day_data = time_series.first  #get the first key pair of the hash
-      binding.pry
+      #  binding.pry
       close_price = recent_day_data["4. close"] #get the value of the key named "4. close"
       @@price_cache[symbol] = close_price.to_f   
     end
@@ -36,7 +36,13 @@ class StockApiService
 
 end
 
-stock_api_service = StockApiService.new
-#binding.pry
-#amazon_price = stock_api_service.latest_price("AMZN")
 puts "something"
+
+def find_stock_price(stock)
+  stock_api_service = StockApiService.new
+  stock_price = stock_api_service.latest_price(stock)
+end
+
+# binding.pry
+#amazon_price = stock_api_service.latest_price("AMZN")
+0

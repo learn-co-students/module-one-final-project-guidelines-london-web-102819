@@ -38,7 +38,6 @@ class CLI
     def email_format_checker
         if @email.include?("@")
             account_registered?
-            password_getter
         else 
             puts "Looks like your email format is incorrect. Please try again"
             email_getter
@@ -46,15 +45,16 @@ class CLI
     end
 
     def account_registered?
-        if @email == User.find_email(@email)
+        user = User.find_email(@email)
+        if @email == user.email
             input = @prompt.select("Looks like you are already registred with us. Would you like to login?", ["Login","Exit"])
             if input == "Login"
                 login_greet
-            else
+            elsif input == "Exit"
                 return
+            else
+                password_getter
             end
-        else
-            password_getter
         end
     end
 
