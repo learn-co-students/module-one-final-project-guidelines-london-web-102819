@@ -22,8 +22,8 @@ ActiveRecord::Schema.define(version: 2019_11_11_155159) do
   end
 
   create_table "stocks", force: :cascade do |t|
-    t.integer "price"
     t.string "company_name"
+    t.string "symbol"
   end
 
   create_table "users", force: :cascade do |t|
