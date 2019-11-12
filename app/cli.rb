@@ -199,7 +199,9 @@ class CLI
     def view_single_stock(symbol)
         stock = Stock.find_by(symbol: symbol)
         price = @price_service.latest_price_for_stock(stock)
-        puts "\nThe latest price for #{stock.company_name} is #{price} USD\n"
+        puts ""
+        puts "The latest price for #{stock.company_name} is $#{'%.2f' % price} USD"
+        puts ""
         input = @prompt.select(
             "What would you like to do?",
             [
@@ -209,11 +211,15 @@ class CLI
             ]
         )
         if input == "Buy #{stock.company_name}"
-            puts "We will implement buying a stock"
+            buy_stock(stock, price)
         elsif input == "Sell #{stock.company_name}"
             puts "We will implement selling a stock"
         end
         dashboard
+    end
+
+    def buy_stock(stock, price)
+        puts "We will implement buying #{stock.symbol} for $#{'%.2f' % price}"
     end
 
 end
