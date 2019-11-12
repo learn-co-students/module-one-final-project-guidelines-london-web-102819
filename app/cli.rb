@@ -5,7 +5,8 @@ require 'pry'
 class CLI
     def initialize
         @prompt = TTY::Prompt.new
-        binding.pry
+        # Inject the API key into the stock service.
+        @price_service = StockPriceService.new("09KS2T8J28FSB9QP")
     end
 
     def greet
@@ -101,7 +102,7 @@ class CLI
     def successful_register 
         @user = User.create_user(@first_name, @last_name, @email, @password) 
         puts "You have sucessfuly registered #{@user.first_name}!"
-        dasboard
+        dashboard
     end
 
     def login_greet
@@ -123,7 +124,7 @@ class CLI
 
     def successful_login
         puts "You have sucessfuly logged in #{@user.first_name}!"
-        dasboard
+        dashboard
     end
 
     def login_fail
@@ -164,20 +165,14 @@ class CLI
         end
     end
 
-    def view_stock_market
-        time_series = time_series_daily(symbol)["Time Series (Daily)"]
-        latest_data = time_series.first
-        close_price = latest_data[1]["4. close"].to_f.round(2)
-    end 
-
-    def dasboard
+    def dashboard
         input = @prompt.select(
             "Dashboard:",
             ["View Current Stocks", "View Stock Market", "Logout" "Exit"]
         )
 
         if input == "View Current Stocks"
-            # read function
+            view_current_stocks
         elsif input == "View Stock Market"
             # read fucntion
         elsif input == "Logout"
@@ -186,6 +181,39 @@ class CLI
             return      
         end
 
+    end
+
+    def view_current_stocks
+        stocks = Stock.all
+        puts "Stocks in the system:"
+        stocks.each_with_index do |stock, i|
+            puts "#{i}. #{stock.symbol} #{stock.company_name}"
+        end
+        input = @prompt.select(
+            "Which stock are you interested in?",
+            stocks.map { |stock| stock.symbol }
+        )
+        view_single_stock(input)
+    end
+
+    def view_single_stock(symbol)
+        stock = Stock.find_by(symbol: symbol)
+        price = @price_service.latest_price_for_stock(stock)
+        puts "\nThe latest price for #{stock.company_name} is #{price} USD\n"
+        input = @prompt.select(
+            "What would you like to do?",
+            [
+                "Buy #{stock.company_name}",
+                "Sell #{stock.company_name}",
+                "Dashboard"
+            ]
+        )
+        if input == "Buy #{stock.company_name}"
+            puts "We will implement buying a stock"
+        elsif input == "Sell #{stock.company_name}"
+            puts "We will implement selling a stock"
+        end
+        dashboard
     end
 
 end
