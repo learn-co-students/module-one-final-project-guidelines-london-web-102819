@@ -21,7 +21,7 @@ class StockPriceService
       time_series = time_series_daily(symbol)["Time Series (Daily)"] #the whole hash
       recent_day, recent_day_data = time_series.first  #get the first key pair of the hash
       close_price = recent_day_data["4. close"] #get the value of the key named "4. close"
-      @@price_cache[symbol] = close_price.to_f   
+      @@price_cache[symbol] = close_price.to_f
     end
     @@price_cache[symbol]
   end
