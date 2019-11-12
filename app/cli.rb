@@ -5,20 +5,15 @@ require 'pry'
 class CLI
     def initialize
         @prompt = TTY::Prompt.new
+        binding.pry
     end
 
-    # @api_key = "09KS2T8J28FSB9QP"
-    # @stock = ["AAPL", "MSFT", "AMZN", "SNAP", "GOOG", "YHOO", "TSLA", "NIKE"].sample
-  def time_series_daily(symbol)
-    content = open("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{symbol}&apikey=09KS2T8J28FSB9QP").read
-    JSON.parse(content)
-  end
-
-
     def greet
-        input = @prompt.select("Welcome to MyStockExchange! Please select and option from the menu", ["Sign Up", "Login", "Delete Account", "Exit"])
-       
-        if  input == "Sign Up"
+        input = @prompt.select(
+            "Welcome to MyStockExchange! Please select and option from the menu",
+            ["Sign Up", "Login", "Delete Account", "Exit"]
+        )
+        if input == "Sign Up"
             register
         elsif input == "Login"
             login_greet
@@ -46,9 +41,9 @@ class CLI
         email_format_checker
     end
 
-
     def email_format_checker
-        if @email.include?("@")
+        # https://regex101.com/r/ARXVie/1
+        if /.+@.+\..+/.match(@email)
             account_registered?
         else 
             puts "Looks like your email format is incorrect. Please try again"
@@ -57,22 +52,25 @@ class CLI
     end
 
     def account_registered?
-        user = User.find_email(@email)
-        if @email == user.email
-            input = @prompt.select("Looks like you are already registred with us. Would you like to login?", ["Login","Exit"])
+        user = User.find_by_email(@email)
+        if user != nil && @email == user.email
+            input = @prompt.select(
+                "Looks like you are already registered with us. Would you like to login?",
+                ["Login", "Exit"]
+            )
             if input == "Login"
                 login_greet
             elsif input == "Exit"
                 return
-            else
-                password_getter
             end
+        else
+            password_getter
         end
     end
 
     def password_getter
-            @password = @prompt.mask("Password (Minimum 8 characters):")
-            password_checker
+        @password = @prompt.mask("Password (Minimum 8 characters):")
+        password_checker
     end
 
     def password_checker
@@ -85,7 +83,7 @@ class CLI
                     return 
                 end
         else
-            password_confirm = @prompt.mask("Please confirm your password")
+            password_confirm = @prompt.mask("Please confirm your password:")
             if @password == password_confirm
                 successful_register 
             else
@@ -109,14 +107,14 @@ class CLI
     def login_greet
         puts "Email:"
         email = gets.chomp
-        @user = User.find_email(email)
+        @user = User.find_by_email(email)
         password = @prompt.mask("Password:")
-        @user_password = User.find_password(password)
+        @user_password = @user.password
         verify
-    end 
+    end
 
     def verify
-        if @user && @user_password != nil
+        if @user && @user_password == @user.password
             successful_login
         else
             login_fail
@@ -149,7 +147,7 @@ class CLI
     def verify_delete
         puts "Please provide your registered email:"
         user_email = gets.chomp
-        @user = User.find_email(user_email)
+        @user = User.find_by_email(user_email)
         if  @user != nil
             puts "Account holder: #{@user.first_name}"
         else
@@ -172,9 +170,11 @@ class CLI
         close_price = latest_data[1]["4. close"].to_f.round(2)
     end 
 
-
     def dasboard
-        input = @prompt.select("Dashboard:", ["View Current Stocks", "View Stock Market", "Logout" "Exit"])
+        input = @prompt.select(
+            "Dashboard:",
+            ["View Current Stocks", "View Stock Market", "Logout" "Exit"]
+        )
 
         if input == "View Current Stocks"
             # read function
@@ -188,11 +188,4 @@ class CLI
 
     end
 
-
 end
-
-# def latest_price(symbol)
-#     time_series = time_series_daily(symbol)["Time Series (Daily)"]
-#     latest_data = time_series.first
-#     close_price = latest_data[1]["4. close"].to_f.round(2)
-#   end
