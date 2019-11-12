@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_155159) do
     t.string "last_name"
     t.integer "account_balance"
     t.string "email"
+    t.string "password"
   end
 
 end
