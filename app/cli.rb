@@ -100,7 +100,7 @@ class CLI
     end
 
     def successful_register 
-        @user = User.create_user(@first_name, @last_name, @email, @password) 
+        @user = User.create_user(@first_name, @last_name, @account_balance, @email, @password) 
         puts "You have sucessfuly registered #{@user.first_name}!"
         dashboard
     end
@@ -170,13 +170,13 @@ class CLI
             "Dashboard:",
             ["View Current Stocks", "View Account", "Logout", "Exit"]
         )
-
         if input == "View Current Stocks"
             view_current_stocks
             dashboard
         elsif input == "View Account"
-            @user.display_balance
-            dashboard
+            balance = @user.get_balance
+            puts "Your balance is $#{balance}"
+            account_menu
         elsif input == "View Stock Market"
             # read fucntion
         elsif input == "Logout"
@@ -184,6 +184,26 @@ class CLI
         else 
             return      
         end
+    end
+
+    
+    def account_menu
+        puts "What would you like to do?"
+        input = @prompt.select(
+        "Account Menu:",
+        ["Top up", "Withdraw"])
+        if input == "Top up"
+           puts "How much would you like to top up? input a number please!"
+           deposit_amount = gets.chomp.to_i
+           #binding.pry
+           @user.deposit(deposit_amount)
+           puts "You have sucessfully topped up #{deposit_amount}! You can select 'View Account' from the 'Dashboard' to check it."
+           dashboard
+        elsif input == "withdraw"
+           puts "How much would you like to withdraw?"
+        #withdraw method
+        end
+        #dashboard
     end
 
     def view_current_stocks
@@ -215,12 +235,12 @@ class CLI
         )
         if input == "Buy #{stock.company_name}"
             @user.buy_stock(stock, price)
+            puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n We will take $#{'%.2f' % price} USD off your account"
         elsif input == "Sell #{stock.company_name}"
             sell_stock(stock, price)
             puts "We will implement selling a stock"
         end
         dashboard
     end
-
     
 end
