@@ -53,7 +53,7 @@ class CLI
     end
 
     def account_registered?
-        user = User.find_by_email(@email)
+        user = User.find_email(@email)
         if user != nil && @email == user.email
             input = @prompt.select(
                 "Looks like you are already registered with us. Would you like to login?",
@@ -108,14 +108,15 @@ class CLI
     def login_greet
         puts "Email:"
         email = gets.chomp
-        @user = User.find_by_email(email)
-        password = @prompt.mask("Password:")
-        @user_password = @user.password
+        @user = User.find_email(email)
+        @password = @prompt.mask("Password:")
+        # @user_password = @user.password
         verify
     end
 
     def verify
-        if @user && @user_password == @user.password
+        binding.pry
+        if @password == @user.password
             successful_login
         else
             login_fail
@@ -168,7 +169,7 @@ class CLI
     def dashboard
         input = @prompt.select(
             "Dashboard:",
-            ["View Current Stocks", "View Stock Market", "Logout" "Exit"]
+            ["View Current Stocks", "View Stock Market", "Logout", "Exit"]
         )
 
         if input == "View Current Stocks"
@@ -185,6 +186,7 @@ class CLI
 
     def view_current_stocks
         stocks = Stock.all
+        binding.pry
         puts "Stocks in the system:"
         stocks.each_with_index do |stock, i|
             puts "#{i}. #{stock.symbol} #{stock.company_name}"

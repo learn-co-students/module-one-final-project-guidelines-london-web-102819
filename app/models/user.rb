@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
     )
   end 
 
-  def self.find_by_email(email)
+  def self.find_email(email)
     User.find_by(email: email)
   end
 
