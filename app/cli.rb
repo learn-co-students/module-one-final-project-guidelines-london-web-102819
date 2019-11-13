@@ -21,7 +21,7 @@ class CLI
         elsif input == "Delete Account"
             delete_user
         else
-            return    
+            return  
         end
     end
 
@@ -168,7 +168,7 @@ class CLI
     def dashboard
         input = @prompt.select(
             "Dashboard:",
-            ["View Current Stocks", "Account", "Logout", "Exit"]
+            ["View Current Stocks", "Account", "Logout"]
         )
         if input == "View Current Stocks"
             view_current_stocks
@@ -178,11 +178,10 @@ class CLI
             puts "Your balance is $#{balance}"
             account_menu
         elsif input == "View Stock Market"
-            # read fucntion
         elsif input == "Logout"
             greet
         else 
-            return      
+            return
         end
     end
 
@@ -191,13 +190,14 @@ class CLI
         puts "What would you like to do?"
         input = @prompt.select(
         "Account Menu:",
-        ["Top up", "Withdraw", "Exit"])
+        ["Top up", "Withdraw", "Go back"])
         if input == "Top up"
            handle_top_up
         elsif input == "Withdraw"
            handle_withdraw
+        elsif input == "Go back"
+            dashboard
         end
-        dashboard
     end
 
 
@@ -205,8 +205,7 @@ class CLI
         puts "How much would you like to top up? input a number please!"
            deposit_amount = gets.chomp.to_i
            @user.deposit(deposit_amount)
-           total_cash = @user.get_balance
-           puts "You have sucessfully topped up $#{deposit_amount}. Your have $#{total_cash} in your cash account now."
+           puts "You have sucessfully topped up $#{deposit_amount}. Your have $#{@user.get_balance} in your cash account now."
            dashboard
     end
 
@@ -215,15 +214,13 @@ class CLI
         money_out = gets.chomp.to_i
         if @user.account_valid?(money_out)
            @user.withdraw(money_out)
-           total_cash = @user.get_balance
-           puts "You have sucessfully withdraw #{money_out}! Your cash account balance is $#{total_cash} now"
+           puts "You have sucessfully withdraw #{money_out}! Your cash account balance is $#{@user.get_balance} now."
            dashboard
         else
            puts "Withdraw rejected, please check your account balance"
            dashboard
         end
     end
-
 
     def view_current_stocks
         stocks = Stock.all
