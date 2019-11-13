@@ -11,4 +11,3 @@ gem "table_print"
 gem 'tty-prompt'
 gem 'pastel'
 gem "tty"
-gem "bcrypt", "~> 3.1"
