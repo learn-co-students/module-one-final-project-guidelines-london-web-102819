@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
     money_out <= self.account_balance
   end
 
-  def with_draw(money_out)
+  def withdraw(money_out)
     self.account_balance -= money_out
     self.save  
   end

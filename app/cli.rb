@@ -168,12 +168,12 @@ class CLI
     def dashboard
         input = @prompt.select(
             "Dashboard:",
-            ["View Current Stocks", "View Account", "Logout", "Exit"]
+            ["View Current Stocks", "Account", "Logout", "Exit"]
         )
         if input == "View Current Stocks"
             view_current_stocks
             dashboard
-        elsif input == "View Account"
+        elsif input == "Account"
             balance = @user.get_balance
             puts "Your balance is $#{balance}"
             account_menu
@@ -191,28 +191,38 @@ class CLI
         puts "What would you like to do?"
         input = @prompt.select(
         "Account Menu:",
-        ["Top up", "Withdraw"])
+        ["Top up", "Withdraw", "Exit"])
         if input == "Top up"
-           puts "How much would you like to top up? input a number please!"
-           deposit_amount = gets.chomp.to_i
-           @user.deposit(deposit_amount)
-           puts "You have sucessfully topped up #{deposit_amount}! You can select 'View Account' from the 'Dashboard' to check it."
-           dashboard
+           handle_top_up
         elsif input == "Withdraw"
-           puts "How much would you like to withdraw? input a number please!"
-           money_out = gets.chomp.to_i
-           if @user.account_valid?(money_out)
-              @user.with_draw(money_out)
-           puts "You have sucessfully withdraw #{money_out}! You can select 'View Account' from the 'Dashboard' to check it."
-           dashboard
-           else
-            puts "Withdraw rejected, please check your account balance"
-            dashboard
-           end
+           handle_withdraw
         end
+        dashboard
     end
 
 
+    def handle_top_up
+        puts "How much would you like to top up? input a number please!"
+           deposit_amount = gets.chomp.to_i
+           @user.deposit(deposit_amount)
+           total_cash = @user.get_balance
+           puts "You have sucessfully topped up $#{deposit_amount}. Your have $#{total_cash} in your cash account now."
+           dashboard
+    end
+
+    def handle_withdraw
+        puts "How much would you like to withdraw? input a number please!"
+        money_out = gets.chomp.to_i
+        if @user.account_valid?(money_out)
+           @user.withdraw(money_out)
+           total_cash = @user.get_balance
+           puts "You have sucessfully withdraw #{money_out}! Your cash account balance is $#{total_cash} now"
+           dashboard
+        else
+           puts "Withdraw rejected, please check your account balance"
+           dashboard
+        end
+    end
 
 
     def view_current_stocks
@@ -244,7 +254,7 @@ class CLI
             ]
         )
         if input == "Buy #{stock.company_name}"
-            buy_stock_platfrom(price, stock)
+            handle_buy_stock(price, stock)
         elsif input == "Sell #{stock.company_name}"
             sell_stock(stock, price)
             puts "We will implement selling a stock"
@@ -252,18 +262,20 @@ class CLI
         dashboard
     end
 
-    def buy_stock_platfrom(price, stock)
+    def handle_buy_stock(price, stock)
         if @user.account_valid?(price)
            @user.buy_stock(stock, price)
-           @user.with_draw(price)
+           @user.withdraw(price)
            puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n We will take $#{'%.2f' % price} USD off your account.
-                You can select 'View Account' from the 'Dashboard' to check it."
+           Your have $#{@user.get_balance} in your cash account now."
         dashboard
         else
-            puts "Sorry, it looks like that you don't have enough blance in your account. 
-            You can select 'View Account' from the 'Dashboard' to top up."
+            puts "Sorry, it looks like that you don't have enough balance in your account. You can select 'View Account' from the 'Dashboard' to top up."
         dashboard
         end
+    end
+
+    def handle_sell_stock(price, stock)
     end
     
 end
