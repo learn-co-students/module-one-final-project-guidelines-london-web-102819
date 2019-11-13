@@ -200,7 +200,7 @@ class CLI
         stock = Stock.find_by(symbol: symbol)
         price = @price_service.latest_price_for_stock(stock)
         puts ""
-        puts "The latest price for #{stock.company_name} is $#{'%.2f' % price} USD"
+        puts "The latest price for #{stock.company_name} is $#{'%.2f' % price}USD"
         puts ""
         input = @prompt.select(
             "What would you like to do?",
