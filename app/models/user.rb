@@ -36,7 +36,6 @@ class User < ActiveRecord::Base
    end
    self.account_balance += money_in
    self.save  
-   #get_balance
   end
 
   def get_balance
