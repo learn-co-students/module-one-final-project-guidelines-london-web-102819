@@ -168,7 +168,7 @@ class CLI
     def dashboard
         input = @prompt.select(
             "Dashboard:",
-            ["View Current Stocks", "View Stock Market", "Logout" "Exit"]
+            ["View Current Stocks", "View Stock Market", "Logout", "Exit"]
         )
 
         if input == "View Current Stocks"
