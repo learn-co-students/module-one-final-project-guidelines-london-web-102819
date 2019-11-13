@@ -21,8 +21,10 @@ class User < ActiveRecord::Base
   end
 
   def buy_stock(stock, price)
-    position = Position.find_or_create_by(portfolio_id: portfolio.id, 
-      stock_id: stock.id, quantity: 1)
+    position = Position.find_or_create_by(
+      portfolio_id: portfolio.id, 
+      stock_id: stock.id
+    )
     position.quantity += 1
     position.save
   end

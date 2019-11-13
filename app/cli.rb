@@ -168,7 +168,7 @@ class CLI
     def dashboard
         input = @prompt.select(
             "Dashboard:",
-            ["View Current Stocks", "Account", "Logout"]
+            ["View Current Stocks", "Account", "Portfolio", "Logout"]
         )
         if input == "View Current Stocks"
             view_current_stocks
@@ -177,7 +177,9 @@ class CLI
             balance = @user.get_balance
             puts "Your balance is $#{balance}"
             account_menu
-        elsif input == "View Stock Market"
+        elsif input == "Portfolio"
+            portfolio_menu
+            dashboard
         elsif input == "Logout"
             greet
         else 
@@ -185,6 +187,30 @@ class CLI
         end
     end
 
+    def portfolio_menu
+        puts "Hi #{@user.first_name}, how are you today? Here is your portfolio:"
+        handle_portfolio
+    end
+
+    #stock = Stock.find_by(symbol: symbol)
+   # price = @price_service.latest_price_for_stock(stock)
+
+    def handle_portfolio
+        @user.portfolio.positions.each do |p|
+            price = @price_service.latest_price_for_position(p)
+            puts "
+Company: #{p.stock.company_name}
+- Shares: #{p.quantity}
+- Price: #{price}
+- Value: #{'%.2f' % (price * p.quantity)}
+"
+        end
+    end
+
+        #puts "What would you like to do with your stocks?"
+       # input = @prompt.select(
+         #   "Portfolio:",
+         #   ["Buy", "Sell", "Go back"])
     
     def account_menu
         puts "What would you like to do?"
@@ -226,7 +252,7 @@ class CLI
         stocks = Stock.all
         puts "Stocks in the system:"
         stocks.each_with_index do |stock, i|
-            puts "#{i}. #{stock.symbol} #{stock.company_name}"
+            puts "#{i + 1}. #{stock.symbol} #{stock.company_name}"
         end
         input = @prompt.select(
             "Which stock are you interested in?",
