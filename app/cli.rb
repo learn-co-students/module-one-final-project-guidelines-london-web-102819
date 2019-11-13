@@ -213,6 +213,8 @@ class CLI
     end
 
 
+
+
     def view_current_stocks
         stocks = Stock.all
         puts "Stocks in the system:"
@@ -225,6 +227,7 @@ class CLI
         )
         view_single_stock(input)
     end
+
 
     def view_single_stock(symbol)
         stock = Stock.find_by(symbol: symbol)
@@ -241,13 +244,26 @@ class CLI
             ]
         )
         if input == "Buy #{stock.company_name}"
-            @user.buy_stock(stock, price)
-            puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n We will take $#{'%.2f' % price} USD off your account"
+            buy_stock_platfrom(price, stock)
         elsif input == "Sell #{stock.company_name}"
             sell_stock(stock, price)
             puts "We will implement selling a stock"
         end
         dashboard
+    end
+
+    def buy_stock_platfrom(price, stock)
+        if @user.account_valid?(price)
+           @user.buy_stock(stock, price)
+           @user.with_draw(price)
+           puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n We will take $#{'%.2f' % price} USD off your account.
+                You can select 'View Account' from the 'Dashboard' to check it."
+        dashboard
+        else
+            puts "Sorry, it looks like that you don't have enough blance in your account. 
+            You can select 'View Account' from the 'Dashboard' to top up."
+        dashboard
+        end
     end
     
 end

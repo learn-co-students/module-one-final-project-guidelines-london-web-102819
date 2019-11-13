@@ -51,5 +51,4 @@ class User < ActiveRecord::Base
     self.account_balance
   end
 
-
 end
