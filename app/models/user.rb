@@ -28,13 +28,16 @@ class User < ActiveRecord::Base
     puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n We will take $#{'%.2f' % price} USD off your account"
   end
 
+  def display_balance
+    puts "Your balance is $#{self.account_balance}"
+  end
+
   def update_amount(price)
     #return amount = price
     #account_balance -= price
   end
 
   def increase_amount
-    #
   end
 
   

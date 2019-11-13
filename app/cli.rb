@@ -168,11 +168,15 @@ class CLI
     def dashboard
         input = @prompt.select(
             "Dashboard:",
-            ["View Current Stocks", "View Stock Market", "Logout", "Exit"]
+            ["View Current Stocks", "View Account", "Logout", "Exit"]
         )
 
         if input == "View Current Stocks"
             view_current_stocks
+            dashboard
+        elsif input == "View Account"
+            @user.display_balance
+            dashboard
         elsif input == "View Stock Market"
             # read fucntion
         elsif input == "Logout"
@@ -180,7 +184,6 @@ class CLI
         else 
             return      
         end
-
     end
 
     def view_current_stocks
