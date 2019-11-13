@@ -211,15 +211,13 @@ class CLI
             ]
         )
         if input == "Buy #{stock.company_name}"
-            buy_stock(stock, price)
+            @user.buy_stock(stock, price)
         elsif input == "Sell #{stock.company_name}"
+            sell_stock(stock, price)
             puts "We will implement selling a stock"
         end
         dashboard
     end
 
-    def buy_stock(stock, price)
-        puts "We will implement buying #{stock.symbol} for $#{'%.2f' % price}"
-    end
-
+    
 end
