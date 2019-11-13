@@ -195,16 +195,23 @@ class CLI
         if input == "Top up"
            puts "How much would you like to top up? input a number please!"
            deposit_amount = gets.chomp.to_i
-           #binding.pry
            @user.deposit(deposit_amount)
            puts "You have sucessfully topped up #{deposit_amount}! You can select 'View Account' from the 'Dashboard' to check it."
            dashboard
-        elsif input == "withdraw"
-           puts "How much would you like to withdraw?"
-        #withdraw method
+        elsif input == "Withdraw"
+           puts "How much would you like to withdraw? input a number please!"
+           money_out = gets.chomp.to_i
+           if @user.account_valid?(money_out)
+              @user.with_draw(money_out)
+           puts "You have sucessfully withdraw #{money_out}! You can select 'View Account' from the 'Dashboard' to check it."
+           dashboard
+           else
+            puts "Withdraw rejected, please check your account balance"
+            dashboard
+           end
         end
-        #dashboard
     end
+
 
     def view_current_stocks
         stocks = Stock.all

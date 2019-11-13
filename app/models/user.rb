@@ -38,6 +38,15 @@ class User < ActiveRecord::Base
    self.save  
   end
 
+  def account_valid?(money_out)
+    money_out <= self.account_balance
+  end
+
+  def with_draw(money_out)
+    self.account_balance -= money_out
+    self.save  
+  end
+
   def get_balance
     self.account_balance
   end
