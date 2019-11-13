@@ -264,7 +264,7 @@ class CLI
            @user.buy_stock(stock, price)
            @user.withdraw(price)
            puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n We will take $#{'%.2f' % price} USD off your account.
-           Your have $#{@user.get_balance} in your cash account now."
+           You have $#{@user.get_balance} in your cash account now."
         dashboard
         else
             puts "Sorry, it looks like that you don't have enough balance in your account. You can select 'View Account' from the 'Dashboard' to top up."
