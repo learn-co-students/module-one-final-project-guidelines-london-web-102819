@@ -8,12 +8,11 @@ google = Stock.find_or_create_by(company_name: "Google", symbol: "GOOG")
 amazon = Stock.find_or_create_by(company_name: "Amazon", symbol: "AMZN")
 tesla = Stock.find_or_create_by(company_name: "Tesla", symbol: "TSLA")
 
-
 # Test user
-
 user1 = User.find_or_create_by(
   first_name: "Qing",
   last_name: "Wang",
+  account_balance: 100000,
   email: "qing@gmail.com",
   password: "mypassword"
 )
@@ -21,6 +20,7 @@ user1 = User.find_or_create_by(
 user2 = User.find_or_create_by(
   first_name: "Faris",
   last_name: "Aziz",
+  account_balance: 100000,
   email: "faris@gmail.com",
   password: "12345678"
 )
@@ -28,6 +28,7 @@ user2 = User.find_or_create_by(
 user3 = User.find_or_create_by(
   first_name: "Andy",
   last_name: "Lewell",
+  account_balance: 100000,
   email: "andy@gmail.com",
   password: "topsecrect"
 )
@@ -40,7 +41,6 @@ portfolio3 = Portfolio.find_or_create_by( user_id: user3.id)
 
 
 # Test position
-
 position1 = Position.find_or_create_by(
   portfolio_id: portfolio1,
   stock_id: apple,
