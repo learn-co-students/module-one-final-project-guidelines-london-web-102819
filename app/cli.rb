@@ -43,7 +43,6 @@ class CLI
     end
 
     def email_format_checker
-        # https://regex101.com/r/ARXVie/1
         if /.+@.+\..+/.match(@email)
             account_registered?
         else 
@@ -168,9 +167,9 @@ class CLI
     def dashboard
         input = @prompt.select(
             "Dashboard:",
-            ["View Current Stocks", "Account", "Portfolio", "Logout"]
+            ["Portfolio", "Account", "Stock Market", "Logout"]
         )
-        if input == "View Current Stocks"
+        if input == "Stock Market"
             view_current_stocks
             dashboard
         elsif input == "Account"
@@ -201,8 +200,8 @@ class CLI
             puts "
 Company: #{p.stock.company_name}
 - Shares: #{p.quantity}
-- Price: #{price}
-- Value: #{'%.2f' % (price * p.quantity)}
+- Price: $#{price}
+- Value: $#{'%.2f' % (price * p.quantity)}
 "
         end
     end
