@@ -113,7 +113,7 @@ class CLI
         # @user_password = @user.password
         verify
     end
-
+#user not being assainged 
     def verify
         binding.pry
         if @password == @user.password
