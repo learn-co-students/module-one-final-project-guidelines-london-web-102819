@@ -20,7 +20,7 @@ class CLI
             login_greet
         elsif input == "Delete Account"
             delete_user
-        else
+        elsif input == "Exit"
             return  
         end
     end
@@ -182,7 +182,7 @@ class CLI
             dashboard
         elsif input == "Logout"
             greet
-        else 
+        else
             return
         end
     end
@@ -205,7 +205,7 @@ class CLI
             puts "
 Company: #{p.stock.company_name}
 - Shares: #{p.quantity}
-- Price: $#{price}
+- Price: $#{price.round(2)}
 - Value: $#{'%.2f' % (price * p.quantity)
 }
 "    end
@@ -242,7 +242,7 @@ Company: #{p.stock.company_name}
         if @user.account_valid?(money_out)
            @user.withdraw(money_out)
            puts ""
-           puts "You have sucessfully withdraw #{money_out}! Your cash account balance is $#{@user.get_balance} now."
+           puts "You have sucessfully withdrawn #{money_out}! Your cash account balance is $#{@user.get_balance} now."
            puts ""
            dashboard
         else
@@ -257,9 +257,7 @@ Company: #{p.stock.company_name}
         stocks = Stock.all
         binding.pry
         puts "Stocks in the system:"
-        stocks.each_with_index do |stock, i|
-            puts "#{i + 1}. #{stock.symbol} #{stock.company_name}"
-        end
+        tp stocks, "company_name", "symbol"
         input = @prompt.select(
             "Which stock are you interested in?",
             stocks.map { |stock| stock.symbol }
