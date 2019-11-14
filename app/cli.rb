@@ -285,7 +285,7 @@ Company: #{p.stock.company_name}
         if input == "Buy #{stock.company_name}"
             handle_buy_stock(price, stock)
         elsif input == "Sell #{stock.company_name}"
-            sell_stock(stock, price)
+            handle_sell_stock(price, stock)
         end
         dashboard
     end
@@ -309,27 +309,30 @@ Company: #{p.stock.company_name}
         end
     end
 
-
     def handle_sell_stock(price, stock)
         if !@user.position_exist?(stock)
            puts ""
            puts "Sorry, it looks like that you don't have the stock"
            puts ""
            dashboard
-        else
+         else
            puts ""
-           puts "How much shares would you like to sell? input a number please"
+           puts "you have How many shares would you like to sell? input a number please!"
            puts ""
-           quantity_input = gets.chomp.to_i
-           if !@user.position_quantity_valid?(quantity_input)
-              puts ""
+           quantity_input = gets.chomp.to_i 
+           if !@user.position_quantity_valid?(quantity_input, stock)
               puts "Request rejected. It looks like you don't have enough shares, please try again"
-              puts ""
-              quantity_input = gets.chomp.to_i
+            handle_sell_stock(price, stock)
            elsif 
-              @user.sell_stock(stock, price, quantity_input)
+           total = quantity_input * price
+           @user.sell_stock(stock, price, quantity_input)
+            puts "You have sold #{quantity_input} shares for #{stock.company_name}, 
+            the total value is $#{total}.\n 
+            Your have $#{'%.2f' % (@user.get_balance)} in your account now."
            end
       end
+      dashboard
     end
     
 end
+
