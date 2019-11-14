@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_155159) do
   create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
-    t.integer "account_balance"
+    t.decimal "account_balance", precision: 10, scale: 2, default: "0.0", null: false
     t.string "email"
     t.string "password"
   end

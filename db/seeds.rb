@@ -19,7 +19,7 @@ user1 = User.find_or_create_by(
   last_name: "Wang",
   account_balance: 100000,
   email: "qing@gmail.com",
-  password: "mypassword"
+  password: "password"
 )
 
 user2 = User.find_or_create_by(
@@ -27,7 +27,7 @@ user2 = User.find_or_create_by(
   last_name: "Aziz",
   account_balance: 100000,
   email: "faris@gmail.com",
-  password: "12345678"
+  password: "123456"
 )
 
 user3 = User.find_or_create_by(
