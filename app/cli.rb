@@ -184,8 +184,7 @@ class CLI
             view_current_stocks
             dashboard
         elsif input == "Account"
-            balance = @user.get_balance
-            puts "Your balance is $#{balance}"
+            puts "Your balance is $#{@user.fmt_balance}"
             account_menu
         elsif input == "Portfolio"
             portfolio_menu
@@ -214,12 +213,12 @@ class CLI
           puts "It looks like you don't have any stocks yet"
          # view_current_stocks
         end
-          @user.portfolio.positions.each do |p|
+          @user.portfolio.positions.select { |p| p.quantity > 0 }.each do |p|
             price = @price_service.latest_price_for_position(p)
             puts "
 Company: #{p.stock.company_name}
 - Shares: #{p.quantity}
-- Price: $#{price.round(2)}
+- Price: $#{'%.2f' % price}
 - Value: $#{'%.2f' % (price * p.quantity)
 }
 "    end
@@ -243,10 +242,11 @@ Company: #{p.stock.company_name}
 
     def handle_top_up
         puts "How much would you like to top up? input a number please!"
-           deposit_amount = gets.chomp.to_i
+           deposit_amount = gets.chomp.to_f
            @user.deposit(deposit_amount)
            puts ""
-           puts "You have sucessfully topped up $#{deposit_amount}. You now have $#{@user.fmt_balance} in your cash account."
+           puts "You have sucessfully topped up $#{'%.2f' % deposit_amount}."
+           puts "You now have $#{@user.fmt_balance} in your cash account."
            puts ""
            dashboard
     end
@@ -316,8 +316,8 @@ Company: #{p.stock.company_name}
         dashboard
         else
             puts ""
-            puts "Sorry, it looks like that you don't have enough balance in your account. 
-                  You can top up from the Account menu below or go back to the dashboard"
+            puts "Sorry, it looks like you don't have enough balance in your account."
+            puts "You can top up from the Account menu below or go back to the dashboard."
             puts ""
             account_menu
         end
@@ -333,7 +333,7 @@ Company: #{p.stock.company_name}
            puts ""
            puts "How many shares would you like to sell? input a number please!"
            quantity_input = gets.chomp.to_i 
-           if !@user.position_quantity_valid?(quantity_input, stock)
+           if quantity_input <= 0 || !@user.position_quantity_valid?(quantity_input, stock)
               puts ""
               puts "Request rejected. It looks like you don't have enough shares, please try again"
               handle_sell_stock(price, stock)

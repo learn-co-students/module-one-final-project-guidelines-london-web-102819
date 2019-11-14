@@ -8,10 +8,6 @@ google = Stock.find_or_create_by(company_name: "Google", symbol: "GOOG")
 amazon = Stock.find_or_create_by(company_name: "Amazon", symbol: "AMZN")
 tesla = Stock.find_or_create_by(company_name: "Tesla", symbol: "TSLA")
 alibaba = Stock.find_or_create_by(company_name: "Alibaba", symbol: "BABA")
-fever_tree = Stock.find_or_create_by(company_name: "Fever Tree", symbol: "FEVR")
-the_gym_group = Stock.find_or_create_by(company_name: "The Gym Group", symbol: "GYM")
-ocado = Stock.find_or_create_by(company_name: "Ocado", symbol: "OCDO")
-
 
 # Test user
 user1 = User.find_or_create_by(

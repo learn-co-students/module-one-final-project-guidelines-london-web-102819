@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
     def position_exist?(stock)
-        Position.find_by(stock_id: stock.id)
+        Position.find_by(stock_id: stock.id, portfolio_id: self.portfolio.id)
     end
 
     def position_quantity_valid?(input_quantity, stock)
