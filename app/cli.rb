@@ -205,10 +205,9 @@ class CLI
 Company: #{p.stock.company_name}
 - Shares: #{p.quantity}
 - Price: $#{price}
+- Value: $#{'%.2f' % (price * p.quantity)
 }
-"
-#- Value: $#{'%.2f' % (price * p.quantity)
-        end
+"    end
     end
     
     def account_menu

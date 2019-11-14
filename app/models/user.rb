@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   end
 
   def buy_stock(stock, price)
+    portfolio = Portfolio.find_or_create_by(user_id: self.id)
     position = Position.find_or_create_by(
       portfolio_id: portfolio.id, 
       stock_id: stock.id
@@ -29,9 +30,10 @@ class User < ActiveRecord::Base
     position.save
   end
 
-  # def position_exist?(stock)
-  #   Positions.find_by(stock_id: stock.id)
-  # end
+ # def position_exist?(stock)
+    #  Positions.find_by(stock_id: stock.id)
+     # Positions.find_by(stock_id: stock.id)
+   # end
 
   # def position_quantity_valid?(input_quantity)
   #   Positions.find_by(stock_id: stock.id).quantity >= input_quantity
