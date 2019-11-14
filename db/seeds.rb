@@ -45,18 +45,13 @@ portfolio3 = Portfolio.find_or_create_by( user_id: user3.id)
 position1 = Position.find_or_create_by(
   portfolio_id: portfolio1.id,
   stock_id: apple.id,
-  quantity: 0
+  quantity: 10
 )
 
 position2 = Position.find_or_create_by(
   portfolio_id: portfolio2.id,
   stock_id: microsoft.id,
   quantity: 15
-)
-position3 = Position.find_or_create_by(
-  portfolio_id: portfolio3.id,
-  stock_id: ocado.id,
-  quantity: 223
 )
 
 p 'seeds done'
