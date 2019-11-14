@@ -12,6 +12,10 @@ class User < ActiveRecord::Base
     )
   end 
 
+  def create_portfolio
+    portfolio = Portfolio.find_or_create_by(user_id: self.id)
+    portfolio.save
+  end
 
   def full_name
     "#{self.first_name} #{self.last_name}"
