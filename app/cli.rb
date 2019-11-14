@@ -176,6 +176,7 @@ class CLI
     end
 
     def dashboard
+        @user.reload
         input = @prompt.select(
             "Dashboard:",
             ["Portfolio", "Account", "Stock Market", "Logout"]
@@ -197,6 +198,7 @@ class CLI
     end
 
     def portfolio_menu
+        @user.reload
         puts "Hi #{@user.first_name}, how are you today? What would you like to do?"
         input = @prompt.select(
         "Portfolio Menu:",
@@ -209,11 +211,13 @@ class CLI
 
 
     def handle_portfolio
-        if @user.portfolio.positions.size < 1
+        @user.reload
+        positions = @user.portfolio.positions
+        if positions.size < 1
           puts "It looks like you don't have any stocks yet"
          # view_current_stocks
         end
-          @user.portfolio.positions.select { |p| p.quantity > 0 }.each do |p|
+        positions.each do |p|
             price = @price_service.latest_price_for_position(p)
             puts "
 Company: #{p.stock.company_name}
@@ -241,6 +245,7 @@ Company: #{p.stock.company_name}
 
 
     def handle_top_up
+        @user.reload
         puts "How much would you like to top up? input a number please!"
            deposit_amount = gets.chomp.to_f
            @user.deposit(deposit_amount)
@@ -252,6 +257,7 @@ Company: #{p.stock.company_name}
     end
 
     def handle_withdraw
+        @user.reload
         puts "How much would you like to withdraw? input a number please!"
         money_out = gets.chomp.to_i
         if @user.account_valid?(money_out)
@@ -269,6 +275,7 @@ Company: #{p.stock.company_name}
     end
 
     def view_current_stocks
+        @user.reload
         stocks = Stock.all
         puts "Stocks in the system:"
         puts ""
@@ -283,6 +290,7 @@ Company: #{p.stock.company_name}
 
 
     def view_single_stock(symbol)
+        @user.reload
         stock = Stock.find_by(symbol: symbol)
         price = @price_service.latest_price_for_stock(stock)
         puts ""
@@ -305,6 +313,7 @@ Company: #{p.stock.company_name}
     end
 
     def handle_buy_stock(price, stock)
+        @user.reload
         if @user.account_valid?(price)
            @user.buy_stock(stock, price)
            @user.withdraw(price)
@@ -324,6 +333,7 @@ Company: #{p.stock.company_name}
     end
 
     def handle_sell_stock(price, stock)
+        @user.reload
         if !@user.position_exist?(stock)
            puts ""
            puts "Sorry, it looks like that you don't have that stock"
