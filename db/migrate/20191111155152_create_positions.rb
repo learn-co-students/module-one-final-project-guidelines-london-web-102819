@@ -3,7 +3,7 @@ class CreatePositions < ActiveRecord::Migration[5.2]
     create_table :positions do |t|
       t.integer :portfolio_id
       t.integer :stock_id
-      t.integer :quantity
+      t.integer :quantity, :null => false, :default => 0
     end
   end
 end

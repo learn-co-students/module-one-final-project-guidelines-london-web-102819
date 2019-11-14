@@ -21,4 +21,4 @@ cli.greet
 # puts portfolio.total_value
 
 
-puts "Application Terminated"
+puts "Goodbye! See you Soon!"
