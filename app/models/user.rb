@@ -29,6 +29,26 @@ class User < ActiveRecord::Base
     position.save
   end
 
+  # def position_exist?(stock)
+  #   Positions.find_by(stock_id: stock.id)
+  # end
+
+  # def position_quantity_valid?(input_quantity)
+  #   Positions.find_by(stock_id: stock.id).quantity >= input_quantity
+  # end
+
+  # def sell_stock(stock, price, quantity_input)
+  #     shares_to_sell = stock.quantity_input
+  #     total_amount = price * shares_to_sell
+  #     @user.deposit(total_amount)
+  #     position = Position.find_or_create_by(
+  #       portfolio_id: portfolio.id, 
+  #       stock_id: stock.id
+  #     )
+  #     position.quantity_input -= 1
+  #     position.save
+  # end
+
   def deposit(money_in)
     if money_in == nil
       money_in = 0
