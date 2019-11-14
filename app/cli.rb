@@ -20,7 +20,7 @@ class CLI
             login_greet
         elsif input == "Delete Account"
             delete_user
-        else
+        elsif input == "Exit"
             return  
         end
     end
@@ -192,7 +192,7 @@ class CLI
             dashboard
         elsif input == "Logout"
             greet
-        else 
+        else
             return
         end
     end
@@ -214,7 +214,7 @@ class CLI
             puts "
 Company: #{p.stock.company_name}
 - Shares: #{p.quantity}
-- Price: $#{price}
+- Price: $#{price.round(2)}
 - Value: $#{'%.2f' % (price * p.quantity)
 }
 "    end
@@ -251,7 +251,7 @@ Company: #{p.stock.company_name}
         if @user.account_valid?(money_out)
            @user.withdraw(money_out)
            puts ""
-           puts "You have sucessfully withdraw #{money_out}! Your cash account balance is $#{@user.get_balance} now."
+           puts "You have sucessfully withdrawn #{money_out}! Your cash account balance is $#{@user.get_balance} now."
            puts ""
            dashboard
         else
@@ -265,10 +265,7 @@ Company: #{p.stock.company_name}
     def view_current_stocks
         stocks = Stock.all
         puts "Stocks in the system:"
-        stocks.each_with_index do |stock, i|
-            puts "#{i + 1}. #{stock.symbol} #{stock.company_name}"
-        end
-        
+        tp stocks, "company_name", "symbol"
         input = @prompt.select(
             "Which stock are you interested in?",
             stocks.map { |stock| stock.symbol }
@@ -305,7 +302,7 @@ Company: #{p.stock.company_name}
            @user.withdraw(price)
             puts ""
             puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n 
-                 We have took $#{'%.2f' % price} USD off your account.\n
+                 We have taken $#{'%.2f' % price} USD off your account.\n
                  You have $#{@user.get_balance} in your cash account now."
             puts ""
         dashboard
@@ -321,17 +318,18 @@ Company: #{p.stock.company_name}
     def handle_sell_stock(price, stock)
         if !@user.position_exist?(stock)
            puts ""
-           puts "Sorry, it looks like that you don't have the stock"
+           puts "Sorry, it looks like that you don't have that stock"
            puts ""
            dashboard
          else
            puts ""
-           puts "you have How many shares would you like to sell? input a number please!"
+           puts "How many shares would you like to sell? input a number please!"
            puts ""
            quantity_input = gets.chomp.to_i 
            if !@user.position_quantity_valid?(quantity_input, stock)
               puts "Request rejected. It looks like you don't have enough shares, please try again"
-            handle_sell_stock(price, stock)
+              view_single_stock(stock.symbol)
+              handle_sell_stock(price, stock)
            elsif 
            total = quantity_input * price
            @user.sell_stock(stock, price, quantity_input)
