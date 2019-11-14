@@ -25,15 +25,25 @@ class CLI
         end
     end
 
+
     def register
         puts 'Full Name:'
-        name = gets.chomp
-        full_name = name.split
+        @name = gets.chomp
+        full_name = @name.split
         first_name = full_name[0]
         last_name = full_name[1]
         @first_name = first_name
         @last_name = last_name
+        name_format_checker
+    end
+
+    def name_format_checker
+        if /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/.match(@name)
         email_getter
+        else
+           puts "Opps! Looks like your name format is incorrect. Please try again."
+           register
+        end
     end
 
     def email_getter
@@ -46,13 +56,13 @@ class CLI
         if /.+@.+\..+/.match(@email)
             account_registered?
         else 
-            puts "Looks like your email format is incorrect. Please try again"
+            puts "Looks like your email format is incorrect. Please try again."
             email_getter
         end
     end
 
     def account_registered?
-        user = User.find_email(@email)
+        user = User.find_by_email(@email)
         if user != nil && @email == user.email
             input = @prompt.select(
                 "Looks like you are already registered with us. Would you like to login?",
@@ -101,6 +111,7 @@ class CLI
     def successful_register 
         @user = User.create_user(@first_name, @last_name, @account_balance, @email, @password) 
         puts "You have sucessfuly registered #{@user.first_name}!"
+        @user.create_portfolio
         dashboard
     end
 
@@ -112,9 +123,8 @@ class CLI
         # @user_password = @user.password
         verify
     end
-#user not being assainged 
+
     def verify
-        # binding.pry
         if @user != nil && @password == @user.password
             successful_login
         else
@@ -194,9 +204,8 @@ class CLI
         ["View Statement", "Go back to the previous page"]) 
         if input == "View Statement"
             handle_portfolio
-        else
-            dashboard 
         end
+        dashboard 
     end
 
     def handle_portfolio
@@ -255,11 +264,11 @@ Company: #{p.stock.company_name}
 
     def view_current_stocks
         stocks = Stock.all
-        binding.pry
         puts "Stocks in the system:"
         stocks.each_with_index do |stock, i|
             puts "#{i + 1}. #{stock.symbol} #{stock.company_name}"
         end
+        
         input = @prompt.select(
             "Which stock are you interested in?",
             stocks.map { |stock| stock.symbol }
