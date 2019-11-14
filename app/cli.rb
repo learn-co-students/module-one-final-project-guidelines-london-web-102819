@@ -247,23 +247,28 @@ Company: #{p.stock.company_name}
     def handle_top_up
         @user.reload
         puts "How much would you like to top up? input a number please!"
-           deposit_amount = gets.chomp.to_f
-           @user.deposit(deposit_amount)
-           puts ""
-           puts "You have sucessfully topped up $#{'%.2f' % deposit_amount}."
-           puts "You now have $#{@user.fmt_balance} in your cash account."
-           puts ""
-           dashboard
+            deposit_amount = gets.chomp.to_f
+            if deposit_amount > 0
+                @user.deposit(deposit_amount)
+                puts ""
+                puts "You have sucessfully topped up $#{'%.2f' % deposit_amount}."
+                puts "You now have $#{@user.fmt_balance} in your cash account."
+                puts ""
+            else
+                puts "Invalid top-up amount!"
+            end
+            dashboard
     end
 
     def handle_withdraw
         @user.reload
         puts "How much would you like to withdraw? input a number please!"
-        money_out = gets.chomp.to_i
-        if @user.account_valid?(money_out)
+        money_out = gets.chomp.to_f
+        if money_out > 0 && @user.account_valid?(money_out)
            @user.withdraw(money_out)
            puts ""
-           puts "You have sucessfully withdrawn #{money_out}! Your cash account balance is $#{@user.fmt_balance} now."
+           puts "You have sucessfully withdrawn #{'%.2f' % money_out}!"
+           puts "Your cash account balance is $#{@user.fmt_balance} now."
            puts ""
            dashboard
         else
