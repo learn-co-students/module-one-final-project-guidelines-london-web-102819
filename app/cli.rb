@@ -293,7 +293,7 @@ Company: #{p.stock.company_name}
            @user.buy_stock(stock, price)
            @user.withdraw(price)
             puts ""
-            puts "Buy one share of #{stock.symbol} stock for $#{'%.2f' % price}\n 
+            puts "Bought one share of #{stock.symbol} stock for $#{'%.2f' % price}\n 
                  We have taken $#{'%.2f' % price} USD off your account.\n
                  You have $#{@user.get_balance} in your cash account now."
             puts ""
