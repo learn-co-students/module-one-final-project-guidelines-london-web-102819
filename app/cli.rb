@@ -373,14 +373,14 @@ Company: #{p.stock.company_name}
            total = quantity_input * price
            @user.sell_stock(stock, price, quantity_input)
             puts ""
-            puts "You have sold #{quantity_input} shares for #{stock.company_name},"
+            puts "You have sold #{quantity_input} shares of #{stock.company_name},"
             puts "the total value is $#{total}."
             puts ""
             puts "Your have $#{@user.fmt_balance} in your account now."
             puts ""
            end
+           dashboard
       end
-      dashboard
     end
     
 end
