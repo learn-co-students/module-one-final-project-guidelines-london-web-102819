@@ -11,6 +11,18 @@ class CLI
     end
 
     def greet
+        puts "                                                                           
+                                                                                          
+$$$$$$\   $$\                      $$\       
+$$  __$$\  $$ |                     $$ |      
+$$ /  \__$$$$$$\   $$$$$$\  $$$$$$$\$$ |  $$\ 
+\$$$$$$\ \_$$  _| $$  __$$\$$  _____$$ | $$  |
+ \____$$\  $$ |   $$ /  $$ $$ /     $$$$$$  / 
+$$\   $$ | $$ |$$\$$ |  $$ $$ |     $$  _$$<  
+\$$$$$$  | \$$$$  \$$$$$$  \$$$$$$$\$$ | \$$\ 
+ \______/   \____/ \______/ \_______\__|  \__|
+                                                       "
+       
         input = @prompt.select(
             "Welcome to MyStockExchange! Please select and option from the menu",
             ["Sign Up", "Login", "Forgot Password", "Delete Account", "Exit"]
