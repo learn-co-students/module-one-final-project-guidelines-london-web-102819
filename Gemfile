@@ -2,6 +2,13 @@
 source "https://rubygems.org"
 
 gem "sinatra-activerecord"
-gem "sqlite3", '~> 1.3.6'
+gem 'activerecord', '~> 5.2', :require => 'active_record'
+gem "sqlite3", '~> 1.4.1'
 gem "pry"
 gem "require_all"
+gem "faker"
+gem "table_print"
+gem 'tty-prompt'
+gem 'pastel'
+gem "tty"
+gem "progress_bar"
