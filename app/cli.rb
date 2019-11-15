@@ -6,7 +6,6 @@ require 'progress_bar'
 class CLI
     def initialize
         @prompt = TTY::Prompt.new
-        # Inject the API key into the stock service.
         @price_service = StockPriceService.new("09KS2T8J28FSB9QP")
         @bar = ProgressBar.new
     end

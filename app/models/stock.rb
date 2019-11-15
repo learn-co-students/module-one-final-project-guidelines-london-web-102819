@@ -4,4 +4,5 @@ class Stock < ActiveRecord::Base
   def price
     StockPriceService.new.latest_price_for_stock(self)
   end
+  
 end
