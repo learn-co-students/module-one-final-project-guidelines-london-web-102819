@@ -156,11 +156,12 @@ class CLI
         puts "Please provide your registered email:"
         user_email = gets.chomp
         @user = User.find_by_email(user_email)
-        puts "Please input your date of birth (DD/MM/YYYY) to verify that this is your account:"
-        sec_ans = gets.chomp
-        if sec_ans == @user.security_answer
-            puts "Your password is *#{@user.password}*"
-        end
+        if @user != nil
+            puts "Please input your date of birth (DD/MM/YYYY) to verify that this is your account:"
+            sec_ans = gets.chomp
+            if sec_ans == @user.security_answer
+                puts "Your password is *#{@user.password}*"
+            end
         input = @prompt.select("Would you like to login?", ["Yes", "No"])
 
         if input == "Yes"
@@ -168,6 +169,15 @@ class CLI
         else
             return
         end
+    else
+        input = @prompt.select("Sorry, looks like you put the wrong email in. Would you like to try again or return to menu?", ["Yes", "No"])
+        if input == "Yes"
+            forgot_password
+        else
+            greet
+        end
+    end
+
     end
 
     def delete_user
