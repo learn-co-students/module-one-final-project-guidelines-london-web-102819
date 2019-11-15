@@ -224,7 +224,6 @@ class CLI
         positions = @user.portfolio.positions
         if positions.size < 1
           puts "It looks like you don't have any stocks yet"
-         # view_current_stocks
         end
         positions.each do |p|
             price = @price_service.latest_price_for_position(p)
@@ -360,7 +359,13 @@ Company: #{p.stock.company_name}
            puts ""
            puts "Sorry, it looks like that you don't have that stock"
            puts ""
-           dashboard
+           input = @prompt.select("Would you like to buy some #{stock.company_name} stocks?", ["Yes", "No"])
+
+        if input == "Yes"
+            handle_buy_stock(price, stock)
+        else
+            dashboard
+        end
          else
            puts ""
            puts "How many shares would you like to sell? input a number please!"
