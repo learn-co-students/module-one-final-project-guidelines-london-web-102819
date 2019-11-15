@@ -6,7 +6,6 @@ require 'progress_bar'
 class CLI
     def initialize
         @prompt = TTY::Prompt.new
-        # Inject the API key into the stock service.
         @price_service = StockPriceService.new("09KS2T8J28FSB9QP")
         @bar = ProgressBar.new
     end
@@ -224,7 +223,6 @@ class CLI
         positions = @user.portfolio.positions
         if positions.size < 1
           puts "It looks like you don't have any stocks yet"
-         # view_current_stocks
         end
         positions.each do |p|
             price = @price_service.latest_price_for_position(p)
