@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   has_one :portfolio
   has_many :positions, through: :portfolio
 
-  def self.create_user(first_name, last_name, account_balance = 0, email, password)
+  def self.create_user(first_name, last_name, account_balance, email, password)
     User.create(
       first_name: first_name,
       last_name: last_name,
@@ -12,6 +12,10 @@ class User < ActiveRecord::Base
     )
   end 
 
+  def create_portfolio
+    portfolio = Portfolio.find_or_create_by(user_id: self.id)
+    portfolio.save
+  end
 
   def full_name
     "#{self.first_name} #{self.last_name}"
@@ -32,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
     def position_exist?(stock)
-        Position.find_by(stock_id: stock.id)
+        Position.find_by(stock_id: stock.id, portfolio_id: self.portfolio.id)
     end
 
     def position_quantity_valid?(input_quantity, stock)
@@ -73,6 +77,10 @@ class User < ActiveRecord::Base
 
   def get_balance
     self.account_balance
+  end
+
+  def fmt_balance
+    '%.2f' % self.account_balance
   end
 
 end

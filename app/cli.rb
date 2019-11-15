@@ -25,15 +25,25 @@ class CLI
         end
     end
 
+
     def register
         puts 'Full Name:'
-        name = gets.chomp
-        full_name = name.split
+        @name = gets.chomp
+        full_name = @name.split
         first_name = full_name[0]
         last_name = full_name[1]
         @first_name = first_name
         @last_name = last_name
+        name_format_checker
+    end
+
+    def name_format_checker
+        if /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/.match(@name)
         email_getter
+        else
+           puts "Opps! Looks like your name format is incorrect. Please try again."
+           register
+        end
     end
 
     def email_getter
@@ -46,13 +56,13 @@ class CLI
         if /.+@.+\..+/.match(@email)
             account_registered?
         else 
-            puts "Looks like your email format is incorrect. Please try again"
+            puts "Looks like your email format is incorrect. Please try again."
             email_getter
         end
     end
 
     def account_registered?
-        user = User.find_email(@email)
+        user = User.find_by_email(@email)
         if user != nil && @email == user.email
             input = @prompt.select(
                 "Looks like you are already registered with us. Would you like to login?",
@@ -69,12 +79,12 @@ class CLI
     end
 
     def password_getter
-        @password = @prompt.mask("Password (Minimum 8 characters):")
+        @password = @prompt.mask("Password (Minimum 6 characters):")
         password_checker
     end
 
     def password_checker
-        if @password.length < 8
+        if @password.length < 6
             puts "Sorry, looks like your password isn't strong enough"
             input = @prompt.select(" ", ["Try again", "Exit"])
                 if input == "Try again"
@@ -98,9 +108,10 @@ class CLI
         end
     end
 
-    def successful_register 
-        @user = User.create_user(@first_name, @last_name, @account_balance, @email, @password) 
+    def successful_register
+        @user = User.create_user(@first_name, @last_name, 0.0, @email, @password) 
         puts "You have sucessfuly registered #{@user.first_name}!"
+        @user.create_portfolio
         dashboard
     end
 
@@ -112,9 +123,8 @@ class CLI
         # @user_password = @user.password
         verify
     end
-#user not being assainged 
+
     def verify
-        # binding.pry
         if @user != nil && @password == @user.password
             successful_login
         else
@@ -166,6 +176,7 @@ class CLI
     end
 
     def dashboard
+        @user.reload
         input = @prompt.select(
             "Dashboard:",
             ["Portfolio", "Account", "Stock Market", "Logout"]
@@ -174,8 +185,7 @@ class CLI
             view_current_stocks
             dashboard
         elsif input == "Account"
-            balance = @user.get_balance
-            puts "Your balance is $#{balance}"
+            puts "Your balance is $#{@user.fmt_balance}"
             account_menu
         elsif input == "Portfolio"
             portfolio_menu
@@ -188,27 +198,35 @@ class CLI
     end
 
     def portfolio_menu
+        @user.reload
         puts "Hi #{@user.first_name}, how are you today? What would you like to do?"
         input = @prompt.select(
         "Portfolio Menu:",
         ["View Statement", "Go back to the previous page"]) 
         if input == "View Statement"
             handle_portfolio
-        else
-            dashboard 
         end
+        dashboard 
     end
 
+
     def handle_portfolio
-        @user.portfolio.positions.each do |p|
+        @user.reload
+        positions = @user.portfolio.positions
+        if positions.size < 1
+          puts "It looks like you don't have any stocks yet"
+         # view_current_stocks
+        end
+        positions.each do |p|
             price = @price_service.latest_price_for_position(p)
             puts "
 Company: #{p.stock.company_name}
 - Shares: #{p.quantity}
-- Price: $#{price.round(2)}
+- Price: $#{'%.2f' % price}
 - Value: $#{'%.2f' % (price * p.quantity)
 }
 "    end
+     
     end
     
     def account_menu
@@ -227,22 +245,30 @@ Company: #{p.stock.company_name}
 
 
     def handle_top_up
+        @user.reload
         puts "How much would you like to top up? input a number please!"
-           deposit_amount = gets.chomp.to_i
-           @user.deposit(deposit_amount)
-           puts ""
-           puts "You have sucessfully topped up $#{deposit_amount}. You now have $#{@user.get_balance} in your cash account."
-           puts ""
-           dashboard
+            deposit_amount = gets.chomp.to_f
+            if deposit_amount > 0
+                @user.deposit(deposit_amount)
+                puts ""
+                puts "You have sucessfully topped up $#{'%.2f' % deposit_amount}."
+                puts "You now have $#{@user.fmt_balance} in your cash account."
+                puts ""
+            else
+                puts "Invalid top-up amount!"
+            end
+            dashboard
     end
 
     def handle_withdraw
+        @user.reload
         puts "How much would you like to withdraw? input a number please!"
-        money_out = gets.chomp.to_i
-        if @user.account_valid?(money_out)
+        money_out = gets.chomp.to_f
+        if money_out > 0 && @user.account_valid?(money_out)
            @user.withdraw(money_out)
            puts ""
-           puts "You have sucessfully withdrawn #{money_out}! Your cash account balance is $#{@user.get_balance} now."
+           puts "You have sucessfully withdrawn #{'%.2f' % money_out}!"
+           puts "Your cash account balance is $#{@user.fmt_balance} now."
            puts ""
            dashboard
         else
@@ -254,10 +280,12 @@ Company: #{p.stock.company_name}
     end
 
     def view_current_stocks
+        @user.reload
         stocks = Stock.all
-        binding.pry
         puts "Stocks in the system:"
+        puts ""
         tp stocks, "company_name", "symbol"
+        puts ""
         input = @prompt.select(
             "Which stock are you interested in?",
             stocks.map { |stock| stock.symbol }
@@ -267,10 +295,11 @@ Company: #{p.stock.company_name}
 
 
     def view_single_stock(symbol)
+        @user.reload
         stock = Stock.find_by(symbol: symbol)
         price = @price_service.latest_price_for_stock(stock)
         puts ""
-        puts "The latest price for #{stock.company_name} is $#{'%.2f' % price}USD"
+        puts "The latest price for #{stock.company_name} is $#{'%.2f' % price} USD"
         puts ""
         input = @prompt.select(
             "What would you like to do?",
@@ -289,25 +318,27 @@ Company: #{p.stock.company_name}
     end
 
     def handle_buy_stock(price, stock)
+        @user.reload
         if @user.account_valid?(price)
            @user.buy_stock(stock, price)
            @user.withdraw(price)
             puts ""
-            puts "Bought one share of #{stock.symbol} stock for $#{'%.2f' % price}\n 
-                 We have taken $#{'%.2f' % price} USD off your account.\n
-                 You have $#{@user.get_balance} in your cash account now."
+            puts "Bought one share of #{stock.symbol} stock for $#{'%.2f' % price}"
+            puts "We have taken $#{'%.2f' % price} USD off your account."
+            puts "You have $#{@user.fmt_balance} in your cash account now."
             puts ""
         dashboard
         else
             puts ""
-            puts "Sorry, it looks like that you don't have enough balance in your account. 
-                  You can top up from the Account menu below or go back to the dashboard"
+            puts "Sorry, it looks like you don't have enough balance in your account."
+            puts "You can top up from the Account menu below or go back to the dashboard."
             puts ""
             account_menu
         end
     end
 
     def handle_sell_stock(price, stock)
+        @user.reload
         if !@user.position_exist?(stock)
            puts ""
            puts "Sorry, it looks like that you don't have that stock"
@@ -316,18 +347,20 @@ Company: #{p.stock.company_name}
          else
            puts ""
            puts "How many shares would you like to sell? input a number please!"
-           puts ""
            quantity_input = gets.chomp.to_i 
-           if !@user.position_quantity_valid?(quantity_input, stock)
+           if quantity_input <= 0 || !@user.position_quantity_valid?(quantity_input, stock)
+              puts ""
               puts "Request rejected. It looks like you don't have enough shares, please try again"
-              view_single_stock(stock.symbol)
               handle_sell_stock(price, stock)
            elsif 
            total = quantity_input * price
            @user.sell_stock(stock, price, quantity_input)
-            puts "You have sold #{quantity_input} shares for #{stock.company_name}, 
-            the total value is $#{total}.\n 
-            Your have $#{'%.2f' % (@user.get_balance)} in your account now."
+            puts ""
+            puts "You have sold #{quantity_input} shares for #{stock.company_name},"
+            puts "the total value is $#{total}."
+            puts ""
+            puts "Your have $#{@user.fmt_balance} in your account now."
+            puts ""
            end
       end
       dashboard
