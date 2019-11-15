@@ -118,7 +118,7 @@ class CLI
     def login_greet
         puts "Email:"
         email = gets.chomp
-        @user = User.find_by_email(email)
+        @user = User.find_by_email(email.downcase)
         @password = @prompt.mask("Password:")
         # @user_password = @user.password
         verify
