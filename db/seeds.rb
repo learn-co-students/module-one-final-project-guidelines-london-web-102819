@@ -15,7 +15,8 @@ user1 = User.find_or_create_by(
   last_name: "Wang",
   account_balance: 100000,
   email: "qing@gmail.com",
-  password: "password"
+  password: "password",
+  security_answer: "test"
 )
 
 user2 = User.find_or_create_by(
@@ -23,7 +24,8 @@ user2 = User.find_or_create_by(
   last_name: "Aziz",
   account_balance: 100000,
   email: "faris@gmail.com",
-  password: "123456"
+  password: "123456",
+  security_answer: "04/12/2000"
 )
 
 user3 = User.find_or_create_by(
@@ -31,7 +33,8 @@ user3 = User.find_or_create_by(
   last_name: "Lewell",
   account_balance: 100000,
   email: "andy@gmail.com",
-  password: "topsecrect"
+  password: "topsecrect",
+  security_answer: "test"
 )
 
 # Test portfolio

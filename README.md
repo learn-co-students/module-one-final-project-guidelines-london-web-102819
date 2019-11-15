@@ -1,10 +1,9 @@
-# Module One Final Project Guidelines
+# Module One Final Project by Qing and Faris 
 
-Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
 
-For your final project, we'll be building a Command Line database application.
+## Project Overview
 
-## Project Requirements
+MyStockExchange is a basic stock exchange application that communicates with an API to get live stock prices. Each user who registers starts with an account balance of $10,000. This balance can be topped up or withdrawn. Additionaly, it can be used to purchase stocks and you can play around with investing to see if you make a profit when you sell those stocks.
 
 ### Option One - Data Analytics Project
 

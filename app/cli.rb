@@ -14,7 +14,7 @@ class CLI
     def greet
         input = @prompt.select(
             "Welcome to MyStockExchange! Please select and option from the menu",
-            ["Sign Up", "Login", "Delete Account", "Exit"]
+            ["Sign Up", "Login", "Forgot Password", "Delete Account", "Exit"]
         )
         if input == "Sign Up"
             register
@@ -22,7 +22,9 @@ class CLI
             login_greet
         elsif input == "Delete Account"
             delete_user
-        elsif input == "Exit"
+        elsif input == "Forgot Password"
+            forgot_password
+        else
             return  
         end
     end
@@ -97,7 +99,7 @@ class CLI
         else
             password_confirm = @prompt.mask("Please confirm your password:")
             if @password == password_confirm
-                successful_register 
+                security_question
             else
                 puts "Looks like your password confirmation doesn't match"
                 input = @prompt.select(" ", ["Try again", "Exit"])
@@ -110,8 +112,15 @@ class CLI
         end
     end
 
+    def security_question
+        puts "As a security measure in case you lose you password please input your date of birth(DD/MM/YYYY):"
+        @security_answer = gets.chomp
+        successful_register 
+    end
+
+
     def successful_register
-        @user = User.create_user(@first_name, @last_name, 0.0, @email, @password) 
+        @user = User.create_user(@first_name, @last_name, 0.0, @email, @password, security_answer) 
         puts "You have sucessfuly registered #{@user.first_name}!"
         @user.create_portfolio
         dashboard
@@ -142,6 +151,24 @@ class CLI
         puts "Oops! Looks like you put in the wrong email/password or you are not registered with us."
         puts "Please try again or sign up"
         greet
+    end
+
+    def forgot_password
+        puts "Please provide your registered email:"
+        user_email = gets.chomp
+        @user = User.find_by_email(user_email)
+        puts "Please input your date of birth (DD/MM/YYYY) to verify that this is your account:"
+        sec_ans = gets.chomp
+        if sec_ans == @user.security_answer
+            puts "Your password is *#{@user.password}*"
+        end
+        input = @prompt.select("Would you like to login?", ["Yes", "No"])
+
+        if input == "Yes"
+            login_greet
+        else
+            return
+        end
     end
 
     def delete_user
@@ -197,7 +224,7 @@ class CLI
             dashboard
         elsif input == "Logout"
             greet
-        else
+        elsif input == "Exit"
             return
         end
     end
@@ -360,7 +387,6 @@ Company: #{p.stock.company_name}
            puts "Sorry, it looks like that you don't have that stock"
            puts ""
            input = @prompt.select("Would you like to buy some #{stock.company_name} stocks?", ["Yes", "No"])
-
         if input == "Yes"
             handle_buy_stock(price, stock)
         else

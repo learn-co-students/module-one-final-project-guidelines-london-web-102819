@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_155159) do
     t.decimal "account_balance", precision: 10, scale: 2, default: "0.0", null: false
     t.string "email"
     t.string "password"
+    t.string "security_answer"
   end
 
 end

@@ -2,13 +2,14 @@ class User < ActiveRecord::Base
   has_one :portfolio
   has_many :positions, through: :portfolio
 
-  def self.create_user(first_name, last_name, account_balance, email, password)
+  def self.create_user(first_name, last_name, account_balance, email, password, security_answer)
     User.create(
       first_name: first_name,
       last_name: last_name,
-      account_balance: account_balance,
+      account_balance: 10_000,
       email: email,
-      password: password
+      password: password,
+      security_answer: security_answer
     )
   end 
 
