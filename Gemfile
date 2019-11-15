@@ -11,3 +11,4 @@ gem "table_print"
 gem 'tty-prompt'
 gem 'pastel'
 gem "tty"
+gem "progress_bar"

@@ -1,12 +1,14 @@
 require 'open-uri'   
 require 'json' 
 require 'pry'
+require 'progress_bar'
 
 class CLI
     def initialize
         @prompt = TTY::Prompt.new
         # Inject the API key into the stock service.
         @price_service = StockPriceService.new("09KS2T8J28FSB9QP")
+        @bar = ProgressBar.new
     end
 
     def greet
@@ -117,10 +119,9 @@ class CLI
 
     def login_greet
         puts "Email:"
-        email = gets.chomp
-        @user = User.find_by_email(email.downcase)
+        email = gets.chomp.downcase
+        @user = User.find_by_email(email)
         @password = @prompt.mask("Password:")
-        # @user_password = @user.password
         verify
     end
 
@@ -179,9 +180,13 @@ class CLI
         @user.reload
         input = @prompt.select(
             "Dashboard:",
-            ["Portfolio", "Account", "Stock Market", "Logout"]
+            ["Portfolio", "Account", "Stock Market", "Logout", "Exit"]
         )
         if input == "Stock Market"
+            100.times do
+                sleep 0.02
+                @bar.increment!
+              end
             view_current_stocks
             dashboard
         elsif input == "Account"
@@ -204,6 +209,10 @@ class CLI
         "Portfolio Menu:",
         ["View Statement", "Go back to the previous page"]) 
         if input == "View Statement"
+            100.times do
+                sleep 0.02
+                @bar.increment!
+              end
             handle_portfolio
         end
         dashboard 
@@ -282,6 +291,10 @@ Company: #{p.stock.company_name}
     def view_current_stocks
         @user.reload
         stocks = Stock.all
+        100.times do
+            sleep 0.02
+            @bar.increment!
+          end
         puts "Stocks in the system:"
         puts ""
         tp stocks, "company_name", "symbol"
@@ -298,6 +311,10 @@ Company: #{p.stock.company_name}
         @user.reload
         stock = Stock.find_by(symbol: symbol)
         price = @price_service.latest_price_for_stock(stock)
+        100.times do
+            sleep 0.02
+            @bar.increment!
+          end
         puts ""
         puts "The latest price for #{stock.company_name} is $#{'%.2f' % price} USD"
         puts ""
