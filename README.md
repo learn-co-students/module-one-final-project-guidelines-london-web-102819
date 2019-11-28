@@ -76,3 +76,4 @@ Having built your project on your own with a partner, you are the expert on it! 
 # in config/environment.rb add this line:
 ActiveRecord::Base.logger = nil
 ```
+y
